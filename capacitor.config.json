@@ -1,0 +1,13 @@
+{
+  "appId": "com.opositasanidad.app",
+  "appName": "Oposita Sanidad",
+  "webDir": "www",
+  "backgroundColor": "#ECEFE9",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#ECEFE9"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
