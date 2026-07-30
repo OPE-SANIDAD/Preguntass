@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Oposita Sanidad · Tests</title>
+<meta name="description" content="Tests para oposiciones de sanidad: Técnico/a de Laboratorio, Celador/a y Técnico/a Auxiliar de Enfermería, por categoría y comunidad autónoma.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#16232B">
+<meta name="background-color" content="#ECEFE9">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oposita Sanidad">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16232B;
+  --ink-soft:#4B5A60;
+  --bg:#ECEFE9;
+  --panel:#FFFFFF;
+  --panel-2:#F5F6F1;
+  --line:#D7DBCF;
+  --teal:#12695C;
+  --teal-soft:#E3EEEA;
+  --gold:#AD7C24;
+  --gold-soft:#F4EAD4;
+  --coral:#AE3A2C;
+  --coral-soft:#F6E3DF;
+  --radius:3px;
+  --shadow: 0 1px 2px rgba(22,35,43,.06), 0 8px 20px rgba(22,35,43,.05);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  font-size:15px;
+}
+h1,h2,h3,.serif{font-family:'Source Serif 4',serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+#app{max-width:640px;margin:0 auto;padding:calc(14px + var(--safe-t)) 14px 30px;}
+a,button{font-family:inherit;}
+button{-webkit-appearance:none;appearance:none;}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:18px;
+  position:sticky;top:0;background:var(--bg);z-index:20;
+}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand-mark{
+  width:30px;height:30px;border:1.5px solid var(--ink);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Source Serif 4',serif;font-weight:700;font-size:12px;
+  color:var(--ink);flex-shrink:0;
+}
+.brand-text{font-family:'Source Serif 4',serif;font-weight:600;font-size:15px;letter-spacing:.2px;line-height:1.1;}
+.brand-text small{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-soft);font-weight:500;margin-top:2px;}
+.user-chip{display:flex;align-items:center;gap:8px;}
+.user-chip button{
+  background:none;border:1px solid var(--line);color:var(--ink-soft);
+  padding:7px 10px;border-radius:var(--radius);cursor:pointer;font-size:11px;min-height:32px;
+}
+
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;box-shadow:var(--shadow);
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 7px;
+}
+h1.title{font-size:22px;margin:0 0 5px;font-weight:600;line-height:1.25;}
+p.sub{color:var(--ink-soft);margin:0 0 20px;font-size:14px;line-height:1.5;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:var(--radius);border:1px solid var(--ink);background:var(--ink);color:#fff;
+  font-size:14.5px;font-weight:500;padding:13px 18px;cursor:pointer;min-height:46px;
+  transition:opacity .15s ease;
+}
+.btn:active{opacity:.8;}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--ink);}
+.btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line);}
+.btn.wide{width:100%;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn.google{background:#fff;color:var(--ink);border:1px solid var(--line);}
+.btn.sm{padding:9px 14px;min-height:40px;font-size:13px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;}
+.field input{
+  width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:var(--radius);
+  font-size:16px;background:var(--panel-2);color:var(--ink);
+}
+.field input:focus{outline:2px solid var(--teal);outline-offset:1px;}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ink-soft);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line);}
+
+.grid{display:grid;grid-template-columns:1fr;gap:10px;}
+.card-select{
+  border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);
+  padding:16px;cursor:pointer;text-align:left;position:relative;min-height:44px;width:100%;
+}
+.card-select:active:not(.disabled){border-color:var(--ink);}
+.card-select.disabled{cursor:not-allowed;opacity:.5;}
+.card-select .tag{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--teal);margin-bottom:8px;display:inline-block;
+}
+.card-select h3{margin:0 0 5px;font-size:16px;}
+.card-select p{margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+.card-select .count{
+  position:absolute;top:14px;right:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);
+  text-align:right;
+}
+.card-select.gold .tag{color:var(--gold);}
+
+.breadcrumb{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);
+  margin-bottom:14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;
+}
+.breadcrumb .crumb{cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);}
+.breadcrumb .sep{opacity:.5;}
+
+.block-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:9px;cursor:pointer;
+}
+.block-row .left{min-width:0;}
+.block-row .num{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:1px;text-transform:uppercase;}
+.block-row .rng{font-size:14.5px;font-weight:600;margin-top:3px;}
+.block-row .score{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--teal);margin-top:3px;}
+.block-row .score.bad{color:var(--coral);}
+
+.test-head{margin-bottom:12px;}
+.progress-bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:7px;}
+.progress-fill{height:100%;background:var(--teal);transition:width .2s ease;}
+.progress-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+
+.palette{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.palette button{
+  width:30px;height:30px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:11px;
+  border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);cursor:pointer;color:var(--ink-soft);
+}
+.palette button.current{border-color:var(--ink);color:var(--ink);font-weight:600;}
+.palette button.answered{background:var(--teal-soft);border-color:var(--teal);color:var(--teal);}
+
+.q-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 16px 16px;box-shadow:var(--shadow);position:relative;margin-bottom:88px;
+}
+.q-stamp{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.q-stamp .code{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);}
+.q-stamp .badge{
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap;
+}
+.badge.comun{background:var(--teal-soft);color:var(--teal);}
+.badge.legis{background:var(--gold-soft);color:var(--gold);}
+.q-text{font-size:17px;line-height:1.45;font-weight:500;margin:0 0 18px;font-family:'Source Serif 4',serif;}
+.opt{
+  display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border:1px solid var(--line);
+  border-radius:var(--radius);margin-bottom:9px;cursor:pointer;background:var(--panel-2);min-height:44px;
+}
+.opt.selected{border-color:var(--teal);background:var(--teal-soft);}
+.opt .letter{
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;color:var(--ink-soft);
+  width:18px;flex-shrink:0;
+}
+.opt.selected .letter{color:var(--teal);}
+.opt .txt{font-size:14px;line-height:1.42;}
+
+.test-foot{
+  position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);
+  padding:10px 14px calc(10px + var(--safe-b));display:flex;gap:8px;z-index:30;
+  max-width:640px;margin:0 auto;
+}
+.test-foot .btn{flex:1;padding:12px 10px;font-size:13.5px;min-height:46px;}
+
+.score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+.score-cell{background:var(--panel);padding:16px 10px;text-align:center;}
+.score-cell .num{font-family:'Source Serif 4',serif;font-size:26px;font-weight:600;line-height:1;}
+.score-cell .lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+.score-cell.ok .num{color:var(--teal);}
+.score-cell.bad .num{color:var(--coral);}
+.score-cell.blank .num{color:var(--ink-soft);}
+
+.ranking-note{
+  border:1px solid var(--gold);background:var(--gold-soft);border-radius:var(--radius);
+  padding:12px 14px;font-size:13px;margin-bottom:20px;color:#6b4d13;line-height:1.45;
+}
+
+.action-stack{display:flex;flex-direction:column;gap:9px;margin-bottom:28px;}
+
+.review-item{border-bottom:1px solid var(--line);padding:14px 0;}
+.review-item:last-child{border-bottom:none;}
+.review-item .q-text{font-size:14.5px;margin:0 0 9px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;line-height:1.4;}
+.review-opt{font-size:13px;padding:8px 10px;border-radius:var(--radius);margin-bottom:5px;display:flex;gap:8px;}
+.review-opt .letter{font-family:'IBM Plex Mono',monospace;font-weight:600;flex-shrink:0;}
+.review-opt.correct{background:var(--teal-soft);color:#0b463d;}
+.review-opt.incorrect{background:var(--coral-soft);color:#7a281e;}
+.review-expl{font-size:12.5px;color:var(--ink-soft);margin-top:8px;padding:10px 12px;background:var(--panel-2);border-left:2px solid var(--gold);line-height:1.45;}
+
+.history-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px;gap:10px;}
+.history-row:last-child{border-bottom:none;}
+.history-row .meta{color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-align:right;white-space:nowrap;}
+
+.footer-note{text-align:center;color:var(--ink-soft);font-size:11px;margin-top:34px;font-family:'IBM Plex Mono',monospace;}
+.state-screen{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:20px;}
+
+@media(min-width:640px){
+  #app{padding:28px 20px 60px;}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+  .test-foot{padding:12px 20px calc(12px + var(--safe-b));}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =========================================================================
+   CONTENIDO REMOTO
+   Las preguntas NO están incrustadas en la app. Se descargan desde esta URL
+   cada vez que hace falta, y se cachean en el dispositivo (localStorage)
+   para poder usarlas sin conexión y para no volver a descargarlas si no
+   han cambiado. Para publicar nuevas preguntas o corregir una existente,
+   solo tienes que actualizar los archivos en esa URL — la app publicada en
+   las tiendas se entera sola, sin pasar por revisión de Apple/Google.
+   Ver README.md para cómo alojar esta carpeta (GitHub, Firebase...).
+   ========================================================================= */
+const CONTENT_URL = 'https://raw.githubusercontent.com/OPE-SANIDAD/Preguntas/main';
+
+const CATEGORY_META = {
+  TEL: {name:'Técnico/a Especialista en Laboratorio'},
+  CEL: {name:'Celador/a'},
+  TAE: {name:'Técnico/a Auxiliar de Enfermería'},
+};
+const COMUN_SIZE = 25;
+const LEGIS_SIZE = 10;
+
+let state = { screen:'boot', user:null, manifest:null, cat:null, mode:null, com:null, order:[], answers:{}, cur:0, lastResult:null, repaso:false, blockIndex:null };
+let QCACHE = {}; // catId -> array de preguntas ya descargadas en esta sesión
+
+// ---------- almacenamiento local del dispositivo (progreso del usuario) ----------
+// Nota: usa localStorage, disponible tanto en el navegador como dentro del
+// WebView de Capacitor. Si más adelante quieres algo más robusto, sustituye
+// estas dos funciones por el plugin @capacitor/preferences (misma firma).
+async function sget(key){ try{ const v = localStorage.getItem('osap_'+key); return v? JSON.parse(v): null; }catch(e){ return null; } }
+async function sset(key,val){ try{ localStorage.setItem('osap_'+key, JSON.stringify(val)); }catch(e){ console.error('storage error',e); } }
+
+function poolKey(cat,tipo,com){ return `${cat}|${tipo}|${com||'-'}`; }
+function blockKey(cat,mode,com,idx){ return `${cat}|${mode}|${com||'-'}|${idx}`; }
+
+async function getFailed(cat){ const f = await sget('failed_'+cat); return f || {}; }
+async function saveFailed(cat,obj){ await sset('failed_'+cat,obj); }
+async function getHistory(cat){ const h = await sget('history_'+cat); return h || []; }
+async function saveHistory(cat,arr){ await sset('history_'+cat,arr); }
+
+// ---------- contenido remoto (preguntas), con caché offline ----------
+async function fetchJSON(url){
+  const res = await fetch(url, {cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return res.json();
+}
+
+async function loadManifest(){
+  try{
+    const m = await fetchJSON(CONTENT_URL + '/manifest.json');
+    localStorage.setItem('osap_manifest_cache', JSON.stringify(m));
+    return m;
+  }catch(e){
+    const cached = localStorage.getItem('osap_manifest_cache');
+    if(cached) return JSON.parse(cached);
+    throw e;
+  }
+}
+
+async function loadCategoryQuestions(catId){
+  if(QCACHE[catId]) return QCACHE[catId];
+  const meta = state.manifest?.[catId];
+  if(!meta || !meta.file) return [];
+  const cacheKey = 'osap_content_'+catId;
+  const cachedRaw = localStorage.getItem(cacheKey);
+  const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
+  if(cached && cached.version === meta.version){
+    QCACHE[catId] = cached.data;
+    return cached.data;
+  }
+  try{
+    const data = await fetchJSON(CONTENT_URL + '/' + meta.file);
+    localStorage.setItem(cacheKey, JSON.stringify({version:meta.version, data}));
+    QCACHE[catId] = data;
+    return data;
+  }catch(e){
+    if(cached){ QCACHE[catId] = cached.data; return cached.data; } // sin conexión: usamos la última versión cacheada
+    throw e;
+  }
+}
+
+function Q(catId){ return QCACHE[catId] || []; }
+function chunk(arr,size){ const out=[]; for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size)); return out; }
+function getBlocks(cat,mode,com){
+  let list;
+  if(mode==='comun'){ list = Q(cat).filter(q=>q.tipo==='comun'); }
+  else { list = Q(cat).filter(q=>q.tipo==='legislacion' && q.com===com); }
+  const size = mode==='comun' ? COMUN_SIZE : LEGIS_SIZE;
+  return chunk(list,size).map((c,i)=>({index:i, ids:c.map(q=>q.id), count:c.length}));
+}
+
+// ---------- arranque ----------
+async function init(){
+  renderState('Cargando contenido…');
+  try{
+    state.manifest = await loadManifest();
+  }catch(e){
+    renderError('No se pudo cargar el listado de tests. Comprueba tu conexión e inténtalo de nuevo.', init);
+    return;
+  }
+  const user = await sget('profile');
+  if(user){ state.user = user; state.screen='category'; } else { state.screen='login'; }
+  render();
+}
+
+function nav(screen, extra={}){ state = {...state, screen, ...extra}; render(); window.scrollTo(0,0); }
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+
+function renderState(msg){
+  document.getElementById('app').innerHTML = `<div class="state-screen">
+    <div class="brand-mark" style="width:44px;height:44px;font-size:16px;">OS</div>
+    <p class="mono" style="color:var(--ink-soft);font-size:13px;">${esc(msg)}</p>
+  </div>`;
+}
+function renderError(msg, retry){
+  document.getElementById('app').innerHTML = `<div class="state-screen">
+    <p style="font-size:14px;color:var(--coral);max-width:320px;">${esc(msg)}</p>
+    <button class="btn" id="retry-btn">Reintentar</button>
+  </div>`;
+  document.getElementById('retry-btn').onclick = retry;
+}
+
+// ---------- render raíz ----------
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = topbarHTML() + screenHTML();
+  bindEvents();
+}
+
+function topbarHTML(){
+  if(state.screen==='login') return '';
+  return `
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">OS</div>
+      <div class="brand-text">Oposita Sanidad<small>Tests de oposición</small></div>
+    </div>
+    <div class="user-chip"><button id="logout-btn">Salir</button></div>
+  </div>`;
+}
+
+function screenHTML(){
+  switch(state.screen){
+    case 'login': return loginScreen();
+    case 'category': return categoryScreen();
+    case 'mode': return modeScreen();
+    case 'comunidad': return comunidadScreen();
+    case 'blocks': return blocksScreen();
+    case 'test': return testScreen();
+    case 'results': return resultsScreen();
+    case 'history': return historyScreen();
+    default: return '<p>—</p>';
+  }
+}
+
+// ---------- LOGIN ----------
+function loginScreen(){
+  return `
+  <div style="max-width:420px;margin:40px auto 0;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div class="brand-mark" style="width:44px;height:44px;font-size:16px;margin:0 auto 12px;">OS</div>
+      <h1 class="serif" style="font-size:21px;margin:0 0 6px;">Oposita Sanidad</h1>
+      <p class="sub" style="margin:0;">Tests para oposiciones de sanidad, por categoría y comunidad autónoma.</p>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">Acceso</p>
+      <div class="field">
+        <label for="login-email">Correo electrónico</label>
+        <input id="login-email" type="email" placeholder="tu@correo.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="login-name">Nombre (opcional)</label>
+        <input id="login-name" type="text" placeholder="Cómo quieres que te llamemos">
+      </div>
+      <button class="btn wide" id="login-submit">Continuar</button>
+      <div class="divider">o</div>
+      <button class="btn google wide" id="login-google">Continuar con Google</button>
+      <p style="font-size:11px;color:var(--ink-soft);margin:14px 0 0;line-height:1.5;">
+        Tu progreso se guarda de forma privada en este dispositivo.
+      </p>
+    </div>
+  </div>`;
+}
+
+// ---------- CATEGORÍA ----------
+function categoryScreen(){
+  const cards = Object.entries(CATEGORY_META).map(([id,meta])=>{
+    const m = state.manifest?.[id];
+    const n = m?.count || 0;
+    const disabled = n===0;
+    return `
+    <button class="card-select ${disabled?'disabled':''}" data-cat="${id}" ${disabled?'disabled':''}>
+      <span class="count">${disabled? 'Próximamente' : n+' preguntas'}</span>
+      <span class="tag">${id}</span>
+      <h3>${esc(meta.name)}</h3>
+      <p>${disabled? 'Banco de preguntas en preparación.' : 'Legislación autonómica y temario común disponibles.'}</p>
+    </button>`;
+  }).join('');
+  return `
+  <p class="eyebrow">Paso 1 · Categoría</p>
+  <h1 class="title">Elige tu categoría</h1>
+  <p class="sub">Selecciona la categoría a la que te presentas.</p>
+  <div class="grid">${cards}</div>
+  <p style="margin-top:24px;"><a href="#" id="history-link" style="color:var(--ink-soft);font-size:13px;">Ver mi historial de resultados →</a></p>
+  `;
+}
+
+// ---------- MODO ----------
+function modeScreen(){
+  const cat = state.cat;
+  const catName = CATEGORY_META[cat].name;
+  const comunCount = Q(cat).filter(q=>q.tipo==='comun').length;
+  const legisCount = Q(cat).filter(q=>q.tipo==='legislacion').length;
+  const comunTests = Math.ceil(comunCount/COMUN_SIZE);
+  return `
+  ${breadcrumb([['Categoría','category'],[catName,null]])}
+  <p class="eyebrow">Paso 2 · Tipo de test</p>
+  <h1 class="title">${esc(catName)}</h1>
+  <p class="sub">¿Quieres practicar temario común o legislación de una comunidad autónoma?</p>
+  <div class="grid">
+    <button class="card-select" data-mode="comun">
+      <span class="count">${comunTests} tests<br>de ${COMUN_SIZE}</span>
+      <span class="tag">Temario</span>
+      <h3>Temario común</h3>
+      <p>${comunCount} preguntas, agrupadas en tests de ${COMUN_SIZE}.</p>
+    </button>
+    <button class="card-select gold" data-mode="legislacion" ${legisCount===0?'disabled':''}>
+      <span class="count">${legisCount} preguntas</span>
+      <span class="tag">Legislación</span>
+      <h3>Legislación autonómica</h3>
+      <p>Elige tu comunidad. Tests de ${LEGIS_SIZE} preguntas por comunidad.</p>
+    </button>
+  </div>
+  <div id="repaso-slot"></div>
+  `;
+}
+
+function failedRepasoBlock(n){
+  if(!n) return '';
+  return `
+  <div class="panel" style="margin-top:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+    <div>
+      <p class="eyebrow" style="margin-bottom:4px;">Repaso</p>
+      <p style="margin:0;font-size:13.5px;">Tienes <strong>${n}</strong> pregunta${n===1?'':'s'} falladas pendientes.</p>
+    </div>
+    <button class="btn secondary wide sm" id="repaso-btn">Repasar falladas</button>
+  </div>`;
+}
+
+// ---------- COMUNIDAD ----------
+function comunidadScreen(){
+  const cat = state.cat;
+  const catName = CATEGORY_META[cat].name;
+  const coms = [...new Set(Q(cat).filter(q=>q.tipo==='legislacion').map(q=>q.com))].sort();
+  const cards = coms.map(com=>{
+    const n = Q(cat).filter(q=>q.tipo==='legislacion' && q.com===com).length;
+    const tests = Math.ceil(n/LEGIS_SIZE);
+    return `
+    <button class="card-select gold" data-com="${esc(com)}">
+      <span class="count">${tests} test${tests===1?'':'s'}<br>${n} preg.</span>
+      <span class="tag">Legislación</span>
+      <h3>${esc(com)}</h3>
+      <p>Tests de ${LEGIS_SIZE} preguntas.</p>
+    </button>`;
+  }).join('');
+  return `
+  ${breadcrumb([['Categoría','category'],[catName,'mode'],['Legislación',null]])}
+  <p class="eyebrow">Paso 3 · Comunidad autónoma</p>
+  <h1 class="title">Elige tu comunidad autónoma</h1>
+  <p class="sub">Practica la legislación específica de tu comunidad.</p>
+  <div class="grid">${cards}</div>
+  `;
+}
+
+// ---------- BLOQUES (lista de tests fijos) ----------
+function blocksScreen(){
+  const cat = state.cat, mode = state.mode, com = state.com;
+  const catName = CATEGORY_META[cat].name;
+  const blocks = getBlocks(cat,mode,com);
+  const bestMap = state._bestByBlock || {};
+  const size = mode==='comun' ? COMUN_SIZE : LEGIS_SIZE;
+  const rows = blocks.map(b=>{
+    const from = b.index*size+1, to = b.index*size+b.count;
+    const key = blockKey(cat,mode,com,b.index);
+    const best = bestMap[key];
+    return `
+    <div class="block-row" data-block="${b.index}">
+      <div class="left">
+        <div class="num">Test ${b.index+1} de ${blocks.length}</div>
+        <div class="rng">Preguntas ${from}–${to} <span style="color:var(--ink-soft);font-weight:400;">(${b.count})</span></div>
+        ${best!==undefined ? `<div class="score ${best<50?'bad':''}">Mejor nota: ${best}%</div>` : ''}
+      </div>
+      <button class="btn sm">${best!==undefined?'Repetir':'Empezar'}</button>
+    </div>`;
+  }).join('');
+  const label = mode==='comun' ? 'Temario común' : `Legislación · ${com}`;
+  const crumbs = mode==='comun'
+    ? [['Categoría','category'],[catName,'mode'],['Temario común',null]]
+    : [['Categoría','category'],[catName,'mode'],['Legislación','comunidad'],[com,null]];
+  return `
+  ${breadcrumb(crumbs)}
+  <p class="eyebrow">Paso ${mode==='comun'?'3':'4'} · Elige un test</p>
+  <h1 class="title">${esc(label)}</h1>
+  <p class="sub">${blocks.length} test${blocks.length===1?'':'s'} de ${size} pregunta${size===1?'':'s'} como máximo.</p>
+  <div>${rows}</div>
+  `;
+}
+
+function breadcrumb(items){
+  return `<div class="breadcrumb">${items.map(([label,to],i)=>{
+    const sep = i>0 ? '<span class="sep">/</span>' : '';
+    return sep + (to ? `<span class="crumb" data-goto="${to}">${esc(label)}</span>` : `<span>${esc(label)}</span>`);
+  }).join('')}</div>`;
+}
+
+// ---------- TEST ----------
+function testScreen(){
+  const total = state.order.length;
+  const idx = state.cur;
+  const qid = state.order[idx];
+  const q = Q(state.cat).find(x=>x.id===qid);
+  const answeredCount = Object.keys(state.answers).length;
+  const pct = Math.round((answeredCount/total)*100);
+  const codeStr = `${state.cat}-${q.tipo==='comun'?'COM':'LEG'}-${String(q.id).padStart(3,'0')}`;
+
+  const palette = state.order.map((id,i)=>{
+    const cls = [];
+    if(i===idx) cls.push('current');
+    if(state.answers[id]!==undefined) cls.push('answered');
+    return `<button data-goto-q="${i}" class="${cls.join(' ')}">${i+1}</button>`;
+  }).join('');
+
+  const opts = q.opts.map((o,i)=>{
+    const sel = state.answers[qid]===i;
+    return `
+    <div class="opt ${sel?'selected':''}" data-opt="${i}">
+      <span class="letter">${String.fromCharCode(65+i)}</span>
+      <span class="txt">${esc(o)}</span>
+    </div>`;
+  }).join('');
+
+  const isLast = idx===total-1;
+
+  return `
+  <div class="test-head">
+    <div class="progress-label">${state.repaso?'REPASO · ':''}Pregunta ${idx+1} de ${total} · ${answeredCount} respondidas</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>
+  <div class="palette">${palette}</div>
+  <div class="q-card">
+    <div class="q-stamp">
+      <div class="code mono">${codeStr}</div>
+      <div class="badge ${q.tipo==='comun'?'comun':'legis'}">${q.tipo==='comun'?'Común':(q.com||'Legislación')}</div>
+    </div>
+    <p class="q-text">${esc(q.q)}</p>
+    <div class="opts">${opts}</div>
+  </div>
+  <div class="test-foot">
+    <button class="btn ghost" id="prev-btn" ${idx===0?'disabled':''}>← Ant.</button>
+    ${isLast
+      ? `<button class="btn" id="finish-btn-2">Corregir test</button>`
+      : `<button class="btn secondary" id="next-btn">Siguiente →</button>`}
+    ${isLast ? '' : `<button class="btn ghost" id="finish-btn">Terminar</button>`}
+  </div>
+  `;
+}
+
+// ---------- RESULTADOS ----------
+function resultsScreen(){
+  const r = state.lastResult;
+  const rankNote = r.rankText ? `<div class="ranking-note">${r.rankText}</div>` : '';
+  const review = r.order.map(id=>{
+    const q = Q(state.cat).find(x=>x.id===id);
+    const ans = r.answers[id];
+    const correct = q.correct;
+    const wasCorrect = ans===correct;
+    const wasBlank = ans===undefined;
+    const optsHTML = q.opts.map((o,i)=>{
+      let cls='';
+      if(i===correct) cls='correct';
+      else if(i===ans) cls='incorrect';
+      if(cls==='') return '';
+      return `<div class="review-opt ${cls}"><span class="letter">${String.fromCharCode(65+i)}</span><span>${esc(o)}</span></div>`;
+    }).join('');
+    return `
+    <div class="review-item">
+      <p class="q-text">${wasBlank?'○':(wasCorrect?'✓':'✗')} ${esc(q.q)}</p>
+      ${optsHTML}
+      ${q.expl?`<div class="review-expl">${esc(q.expl)}</div>`:''}
+    </div>`;
+  }).join('');
+
+  return `
+  <p class="eyebrow">Resultado</p>
+  <h1 class="title">${r.correct} de ${r.total} correctas</h1>
+  <p class="sub">${esc(r.label)}</p>
+  <div class="score-grid">
+    <div class="score-cell ok"><div class="num">${r.correct}</div><div class="lbl">Bien</div></div>
+    <div class="score-cell bad"><div class="num">${r.wrong}</div><div class="lbl">Mal</div></div>
+    <div class="score-cell blank"><div class="num">${r.blank}</div><div class="lbl">En blanco</div></div>
+    <div class="score-cell"><div class="num">${r.score}%</div><div class="lbl">Nota</div></div>
+  </div>
+  ${rankNote}
+  <div class="action-stack">
+    ${r.wrong>0 ? `<button class="btn wide" id="repaso-now-btn">Repasar las ${r.wrong} falladas</button>`:''}
+    <button class="btn secondary wide" id="repeat-btn">Repetir este test</button>
+    <button class="btn ghost wide" id="menu-btn">Volver al menú</button>
+  </div>
+  <p class="eyebrow">Revisión detallada</p>
+  <div class="panel" style="padding:4px 16px;">${review}</div>
+  `;
+}
+
+// ---------- HISTORIAL ----------
+function historyScreen(){
+  const rows = (state._history||[]).slice().reverse().map(h=>{
+    const d = new Date(h.ts);
+    return `<div class="history-row">
+      <span>${esc(h.label)}</span>
+      <span class="meta">${d.toLocaleDateString('es-ES')}<br>${h.correct}/${h.total} · ${h.score}%</span>
+    </div>`;
+  }).join('') || '<p style="color:var(--ink-soft);font-size:14px;">Todavía no has completado ningún test.</p>';
+  return `
+  ${breadcrumb([['Categoría','category'],['Historial',null]])}
+  <p class="eyebrow">Tu progreso</p>
+  <h1 class="title">Historial de resultados</h1>
+  <div class="panel" style="padding:4px 16px;">${rows}</div>
+  `;
+}
+
+// ---------- EVENTOS ----------
+function bindEvents(){
+  const app = document.getElementById('app');
+
+  const logout = document.getElementById('logout-btn');
+  if(logout) logout.onclick = ()=>{ state.user=null; nav('login'); };
+
+  app.querySelectorAll('[data-goto]').forEach(el=>{
+    el.onclick = ()=> nav(el.dataset.goto);
+  });
+
+  const histLink = document.getElementById('history-link');
+  if(histLink) histLink.onclick = async (e)=>{ e.preventDefault(); state._history = await getHistory(state.cat || Object.keys(CATEGORY_META)[0]); nav('history'); };
+
+  // LOGIN
+  const loginSubmit = document.getElementById('login-submit');
+  if(loginSubmit) loginSubmit.onclick = async ()=>{
+    const email = document.getElementById('login-email').value.trim();
+    const name = document.getElementById('login-name').value.trim();
+    if(!email || !email.includes('@')){ alert('Introduce un correo electrónico válido.'); return; }
+    const profile = {email, name: name || email.split('@')[0]};
+    await sset('profile', profile);
+    state.user = profile;
+    nav('category');
+  };
+  const loginGoogle = document.getElementById('login-google');
+  if(loginGoogle) loginGoogle.onclick = async ()=>{
+    const profile = {email:'usuario@gmail.com', name:'Opositor/a'};
+    await sset('profile', profile);
+    state.user = profile;
+    nav('category');
+  };
+
+  // CATEGORÍA — al elegirla, se descargan sus preguntas (o se usa la caché)
+  app.querySelectorAll('[data-cat]').forEach(el=>{
+    el.onclick = async ()=>{
+      const cat = el.dataset.cat;
+      renderState('Cargando preguntas…');
+      try{
+        await loadCategoryQuestions(cat);
+      }catch(e){
+        renderError('No se pudieron cargar las preguntas de esta categoría. Revisa tu conexión.', ()=>{ nav('category'); });
+        return;
+      }
+      nav('mode', {cat});
+      loadRepasoSlot(cat);
+    };
+  });
+
+  // MODO
+  app.querySelectorAll('[data-mode]').forEach(el=>{
+    el.onclick = ()=>{
+      const mode = el.dataset.mode;
+      if(mode==='comun') goToBlocks(state.cat, 'comun', null);
+      else nav('comunidad', {mode});
+    };
+  });
+
+  // COMUNIDAD
+  app.querySelectorAll('[data-com]').forEach(el=>{
+    el.onclick = ()=>{ goToBlocks(state.cat, 'legislacion', el.dataset.com); };
+  });
+
+  // BLOQUES — toda la fila es pulsable
+  app.querySelectorAll('[data-block]').forEach(el=>{
+    el.onclick = ()=>{
+      const idx = parseInt(el.dataset.block,10);
+      const blocks = getBlocks(state.cat, state.mode, state.com);
+      const b = blocks[idx];
+      nav('test', {order:[...b.ids], answers:{}, cur:0, repaso:false, blockIndex:idx});
+    };
+  });
+
+  // TEST
+  app.querySelectorAll('[data-goto-q]').forEach(el=>{
+    el.onclick = ()=>{ state.cur = parseInt(el.dataset.gotoQ,10); render(); };
+  });
+  app.querySelectorAll('[data-opt]').forEach(el=>{
+    el.onclick = ()=>{
+      const qid = state.order[state.cur];
+      state.answers[qid] = parseInt(el.dataset.opt,10);
+      render();
+    };
+  });
+  const prevBtn = document.getElementById('prev-btn');
+  if(prevBtn) prevBtn.onclick = ()=>{ state.cur = Math.max(0,state.cur-1); render(); };
+  const nextBtn = document.getElementById('next-btn');
+  if(nextBtn) nextBtn.onclick = ()=>{ state.cur = Math.min(state.order.length-1,state.cur+1); render(); };
+  const finishBtn = document.getElementById('finish-btn');
+  if(finishBtn) finishBtn.onclick = ()=> finishTest();
+  const finishBtn2 = document.getElementById('finish-btn-2');
+  if(finishBtn2) finishBtn2.onclick = ()=> finishTest();
+
+  // RESULTADOS
+  const repasoNow = document.getElementById('repaso-now-btn');
+  if(repasoNow) repasoNow.onclick = ()=>{
+    const wrongIds = state.lastResult.order.filter(id=> state.lastResult.answers[id] !== Q(state.cat).find(q=>q.id===id).correct);
+    nav('test', {order: wrongIds, answers:{}, cur:0, repaso:true, mode:'repaso', com:null, blockIndex:null});
+  };
+  const repeatBtn = document.getElementById('repeat-btn');
+  if(repeatBtn) repeatBtn.onclick = ()=>{
+    nav('test', {order:[...state.lastResult.order], answers:{}, cur:0, repaso:state.repaso});
+  };
+  const menuBtn = document.getElementById('menu-btn');
+  if(menuBtn) menuBtn.onclick = ()=> nav('category');
+}
+
+async function goToBlocks(cat, mode, com){
+  const history = await getHistory(cat);
+  const bestMap = {};
+  history.forEach(h=>{
+    if(h.blockKey===undefined || h.blockKey===null) return;
+    if(bestMap[h.blockKey]===undefined || h.score>bestMap[h.blockKey]) bestMap[h.blockKey]=h.score;
+  });
+  nav('blocks', {mode, com, _bestByBlock:bestMap});
+}
+
+async function loadRepasoSlot(cat){
+  const failed = await getFailed(cat);
+  const n = Object.values(failed).reduce((a,arr)=>a+arr.length,0);
+  const slot = document.getElementById('repaso-slot');
+  if(slot) slot.innerHTML = failedRepasoBlock(n);
+  const btn = document.getElementById('repaso-btn');
+  if(btn) btn.onclick = ()=> startRepaso(cat);
+}
+
+async function startRepaso(cat){
+  const failed = await getFailed(cat);
+  const ids = [...new Set(Object.values(failed).flat())];
+  if(ids.length===0){ return; }
+  nav('test', {order: ids, answers:{}, cur:0, repaso:true, mode:'repaso', com:null, blockIndex:null});
+}
+
+async function finishTest(){
+  const order = state.order;
+  const answers = state.answers;
+  const cat = state.cat;
+  let correct=0, wrong=0, blank=0;
+  order.forEach(id=>{
+    const q = Q(cat).find(x=>x.id===id);
+    if(answers[id]===undefined) blank++;
+    else if(answers[id]===q.correct) correct++;
+    else wrong++;
+  });
+  const total = order.length;
+  const score = Math.round((correct/total)*1000)/10;
+
+  const label = state.repaso
+    ? 'Repaso de preguntas falladas'
+    : (state.mode==='legislacion' ? `Legislación · ${state.com} · Test ${state.blockIndex+1}` : `Temario común · Test ${state.blockIndex+1}`);
+
+  const failedObj = await getFailed(cat);
+  order.forEach(id=>{
+    const q = Q(cat).find(x=>x.id===id);
+    const wasCorrect = answers[id]===q.correct;
+    Object.keys(failedObj).forEach(k=>{
+      failedObj[k] = failedObj[k].filter(fid=>fid!==id);
+    });
+    if(!wasCorrect){
+      const k = poolKey(cat, q.tipo, q.com);
+      if(!failedObj[k]) failedObj[k]=[];
+      if(!failedObj[k].includes(id)) failedObj[k].push(id);
+    }
+  });
+  Object.keys(failedObj).forEach(k=>{ if(failedObj[k].length===0) delete failedObj[k]; });
+  await saveFailed(cat, failedObj);
+
+  const history = await getHistory(cat);
+  const bKey = state.repaso ? null : blockKey(cat, state.mode, state.com, state.blockIndex);
+  const record = {ts:Date.now(), label, cat, mode:state.mode, com:state.com, blockKey:bKey, total, correct, wrong, blank, score};
+  history.push(record);
+  await saveHistory(cat, history);
+
+  const comparable = bKey ? history.filter(h=>h.blockKey===bKey) : history.filter(h=>h.label===label);
+  let rankText = '';
+  if(comparable.length>1){
+    const sorted = [...comparable].sort((a,b)=>b.score-a.score);
+    const pos = sorted.findIndex(h=>h.ts===record.ts)+1;
+    rankText = `Este es tu resultado nº ${pos} de ${sorted.length} en este test. Tu mejor nota aquí: ${sorted[0].score}%.`;
+  } else {
+    rankText = 'Este es tu primer resultado registrado en este test. Repítelo para ver tu evolución.';
+  }
+
+  nav('results', { lastResult:{order, answers, correct, wrong, blank, total, score, label, rankText} });
+}
+
+init();
+
+// ---------- PWA: registro del service worker ----------
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>{
+      console.error('No se pudo registrar el service worker:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
